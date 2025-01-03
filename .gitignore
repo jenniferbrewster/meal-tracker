@@ -1,0 +1,27 @@
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Data files
+*.csv
+recipes.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+
+# System files
+<<<<<<< HEAD
+.DS_Store 
+=======
+.DS_Store
+>>>>>>> 0724689e384b6a81dfa3e2c4eeb0bea994e5818d
