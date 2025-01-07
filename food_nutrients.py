@@ -688,19 +688,22 @@ FOOD_NUTRIENTS = {
            "calories": 3,
            "protein": 0.2,
            "carbs": 0.5,
-           "fat": 0.2
+           "fat": 0.2,   
+           'fiber': 0.5
         },
         'Fennel Seeds': {
            "calories": 6,
            "protein": 0.3,
            "carbs": 1.4,
-           "fat": 0.3
+           "fat": 0.3,
+           "fiber": 1.4
         },
         'Curry Leaves': {
            "calories": 23,
            "protein": 2.0,
            "carbs": 4.0,
-           "fat": 0.5
+           "fat": 0.5,
+           "fiber": 0
         }
     }
 }

@@ -513,14 +513,15 @@ ALLOWED_FOODS = {
             'conversion': '1 tablespoon of collagen powder is approximately 11 grams'
         },
         'Chicken Breast': {
-            'portion': '100g',
+            'portion': 'Unlimited',
+            'conversion': 'A typical serving (100 grams) is about the size of a deck of cards'
         },
         'Turkey': {
-            'portion': '100g',
+            'portion': 'Unlimited',
             'conversion': '100 grams of turkey is approximately 1/2 cup cooked'
         },
         'Chicken Pieces with Skin': {
-            'portion': '100g',
+            'portion': 'Unlimited',
             'conversion': '100 grams of chicken pieces with skin is approximately 1 piece'
         }
     }
