@@ -155,9 +155,12 @@ if st.session_state.recipe_foods:
 # Modify the Existing Recipes section to use a callback
 def handle_edit_click(recipe_id):
     st.session_state.editing = True
-    st.session_state.editing_recipe_name = recipe_name
-    st.session_state.recipe_foods = load_recipes()[recipe_id]
-    st.session_state.food_item_reset = True
+    recipes = load_recipes()
+    selected_recipe = next((recipe for recipe in recipes if recipe['id'] == recipe_id), None)
+    if selected_recipe:
+        st.session_state.editing_recipe_name = selected_recipe['recipe_name']
+        st.session_state.recipe_foods = selected_recipe['foods']
+        st.session_state.food_item_reset = True
 
 # Existing Recipes Section
 st.header("Existing Recipes")
