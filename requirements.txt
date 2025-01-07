@@ -1,3 +1,4 @@
 streamlit
 pandas
-plotly 
+plotly
+pyodbc  # For Azure SQL connection 

@@ -441,6 +441,18 @@ ALLOWED_FOODS = {
         'Bicarbonate of soda': {
             'portion': 'Unlimited',
             'conversion': '1 teaspoon is approximately 4.8 grams'
+        },
+        'Mustard': {
+            'portion': '1 tsp',
+            'conversion': '1 teaspoon of mustard is approximately 5 grams'
+        },
+        'Fennel Seeds': {
+            'portion': '1 tsp',
+            'conversion': '1 teaspoon of fennel seeds is approximately 2 grams'
+        },
+        'Curry Leaves': {
+            'portion': '1 cup',
+            'conversion': '1 cup of curry leaves is approximately 21 grams'
         }
     },
     'Proteins': {
@@ -499,6 +511,17 @@ ALLOWED_FOODS = {
         'Collagen': {
             'portion': '10g',
             'conversion': '1 tablespoon of collagen powder is approximately 11 grams'
+        },
+        'Chicken Breast': {
+            'portion': '100g',
+        },
+        'Turkey': {
+            'portion': '100g',
+            'conversion': '100 grams of turkey is approximately 1/2 cup cooked'
+        },
+        'Chicken Pieces with Skin': {
+            'portion': '100g',
+            'conversion': '100 grams of chicken pieces with skin is approximately 1 piece'
         }
     }
 } 

@@ -219,6 +219,18 @@ FOOD_NUTRIENTS = {
             'carbs': 0.72,
             'fiber': 0
         },
+        "Turkey": {
+          "calories": 135,
+          "protein": 30,
+          "carbs": 0,
+          "fat": 1.5
+        },
+        'Chicken Pieces with Skin': {  # Raw chicken pieces with skin
+            'calories': 239,
+            'protein': 27,
+            'carbs': 0,
+            'fat': 14
+        },
         'Lean fresh chicken': {  # Chicken breast, raw, USDA #05062
             'calories': 120,
             'protein': 22.5,
@@ -671,6 +683,24 @@ FOOD_NUTRIENTS = {
             'fat': 0,
             'carbs': 0,
             'fiber': 0
+        },
+        'Mustard': {
+           "calories": 3,
+           "protein": 0.2,
+           "carbs": 0.5,
+           "fat": 0.2
+        },
+        'Fennel Seeds': {
+           "calories": 6,
+           "protein": 0.3,
+           "carbs": 1.4,
+           "fat": 0.3
+        },
+        'Curry Leaves': {
+           "calories": 23,
+           "protein": 2.0,
+           "carbs": 4.0,
+           "fat": 0.5
         }
     }
-} 
+}

@@ -50,8 +50,8 @@ with meal_log_container:
                 with col2:
                     st.write(row["foods"])
                 with col3:
-                    if st.button("❌", key=f"delete_{row['id']}"):
-                        delete_meal(row['id'])
+                    if st.button("❌", key=f"delete_{row['id']}", on_click=delete_meal, args=(row['id'],)):
+                        print(f"Attempting to delete meal with ID: {row['id']}")  # Debugging
         else:
             st.write("No meals logged for this date.")
     else:
@@ -69,5 +69,5 @@ with meal_log_container:
             with col3:
                 st.write(row["foods"])
             with col4:
-                if st.button("🗑️", key=f"delete_{row['id']}"):
-                    delete_meal(row['id']) 
+                if st.button("🗑️", key=f"delete_{row['id']}", on_click=delete_meal, args=(row['id'],)):
+                    print(f"Attempting to delete meal with ID: {row['id']}")  # Debugging 

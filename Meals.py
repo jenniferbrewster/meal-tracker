@@ -1,12 +1,18 @@
 import datetime
 import streamlit as st
 import pandas as pd
-import os
 from datetime import date
 import json
-from food_data import ALLOWED_FOODS, DAILY_FRUIT_PORTION_LIMIT, is_limited_fruit  # Add this import at the top
-import logging  # Add at the top of the file
+from food_data import ALLOWED_FOODS, DAILY_FRUIT_PORTION_LIMIT, is_limited_fruit
+import logging
 import hmac
+from database import (
+    init_database,
+    load_recipes as db_load_recipes,
+    load_meals,
+    save_meal,
+    delete_meal as db_delete_meal
+)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -14,10 +20,6 @@ logger = logging.getLogger(__name__)
 
 # Set page title
 st.title("Daily Meal Tracker")
-
-# Path to the CSV file where data will be stored
-DATA_FILE = "meals.csv"
-RECIPES_FILE = "recipes.json"
 
 if 'food_item_reset' not in st.session_state:
     st.session_state.food_item_reset = False
@@ -78,18 +80,14 @@ def require_auth(func):
             st.stop()  # Stop execution if not authenticated
     return wrapper
 
+# Initialize database on startup
+init_database()
+
+# Replace file operations with database calls
 @require_auth
 def load_data():
-    """Load the meal data from the CSV file or create a new DataFrame if it doesn't exist."""
-    if os.path.exists(DATA_FILE):
-        return pd.read_csv(DATA_FILE)
-    else:
-        return pd.DataFrame(columns=["id", "date", "meal_type", "foods"])
-
-@require_auth
-def save_data(df):
-    """Save the current DataFrame to the CSV file."""
-    df.to_csv(DATA_FILE, index=False)
+    """Load the meal data from the database"""
+    return load_meals()
 
 def is_valid_food(food_item):
     """Check if the food item is in the allowed foods list."""
@@ -121,26 +119,16 @@ def add_food_to_meal(foods_list, food_item, quantity):
         st.error("This food is not in the allowed foods list. Please check the allowed foods section.")
     return False
 
+@require_auth
 def add_meal(meal_date, meal_type, foods_list):
-    data = load_data()
-    """Add a complete meal to the data."""
+    """Add a complete meal to the database"""
     if not foods_list:
         st.error("Please add at least one food item to the meal")
-        return data
+        return load_data()
     
-    # Generate a new unique ID
-    new_id = 0 if data.empty else data['id'].max() + 1
-    
-    new_row = pd.DataFrame({
-        "id": [new_id],
-        "date": [meal_date.isoformat()],
-        "meal_type": [meal_type],
-        "foods": [json.dumps(foods_list)]
-    })
-    data = pd.concat([data, new_row], ignore_index=True)
-    save_data(data)
+    save_meal(meal_date, meal_type, foods_list)
     st.success(f"{meal_type} added successfully!")
-    return data
+    return load_data()
 
 def format_foods_for_display(foods_str):
     """Convert the JSON string of foods into a readable format."""
@@ -149,18 +137,10 @@ def format_foods_for_display(foods_str):
 
 @require_auth
 def delete_meal(meal_id):
-    """Delete a meal from the data using its ID."""
-    data = load_data()
+    """Delete a meal from the database"""
     try:
-        meal_id = int(meal_id)
-        
-        if meal_id in data['id'].values:
-            data = data[data['id'] != meal_id].copy()
-            save_data(data)
-            st.success("Meal deleted successfully!")
-        else:
-            print(f"Error: Meal ID {meal_id} not found in database")
-            st.error(f"Could not find meal with ID {meal_id}")
+        db_delete_meal(meal_id)
+        st.success("Meal deleted successfully!")
     except Exception as e:
         st.error(f"Error deleting meal: {str(e)}")
     finally:
@@ -184,23 +164,16 @@ def get_all_foods_with_categories():
 
 @require_auth
 def load_recipes():
-    """Load recipes from the JSON file or return empty dict if file doesn't exist."""
-    if os.path.exists(RECIPES_FILE):
-        with open(RECIPES_FILE, 'r') as f:
-            return json.load(f)
-    return {}
-
-@require_auth
-def save_recipe(recipe_name, foods):
-    """Save a recipe to the recipes file."""
-    recipes = load_recipes()
-    recipes[recipe_name] = foods
-    with open(RECIPES_FILE, 'w') as f:
-        json.dump(recipes, f)
+    """Load recipes from the database"""
+    try:
+        return db_load_recipes()  # Use the renamed function
+    except Exception as e:
+        logger.error(f"Error loading recipes: {str(e)}")
+        return {}
 
 def load_recipe(recipe_name):
     """Load a recipe's foods into the current meal."""
-    recipes = load_recipes()
+    recipes = load_recipes()  # This now uses the correct function
     return recipes.get(recipe_name, [])
 
 def reset_food_fields():
@@ -277,7 +250,7 @@ def check_portion_limits(food_name, quantity_grams, date):
     
     return warnings
 
-# Load existing data and recipes at the start
+# Load existing data at the start
 data = load_data()
 recipes = load_recipes()
 
@@ -305,14 +278,16 @@ with col1:
     # Recipe loading option (removed the recipes loading from here)
     if recipes and not st.session_state.recipe_loaded and not st.session_state.current_foods:
         st.write("Load foods from recipe (if applicable):")
-        recipe_names = list(recipes.keys())
-        selected_recipe = st.selectbox("Select recipe:", 
-                                     [""] + recipe_names,
-                                     key="recipe_select")
-        if selected_recipe and st.button("Load Recipe"):
-            st.session_state.current_foods = load_recipe(selected_recipe)
-            st.session_state.recipe_loaded = True
-            st.rerun()
+        # Extract recipe names from the list of dictionaries
+        recipe_names = [recipe['recipe_name'] for recipe in recipes]
+        selected_recipe = st.selectbox("Select recipe:", [""] + recipe_names, key="recipe_select")
+        if selected_recipe:
+            # Find the selected recipe in the list
+            selected_recipe_data = next((recipe for recipe in recipes if recipe['recipe_name'] == selected_recipe), None)
+            if selected_recipe_data:
+                st.session_state.current_foods = selected_recipe_data['foods']
+                st.session_state.recipe_loaded = True
+                st.rerun()
 
 # Add food items to the meal
 with col2:
