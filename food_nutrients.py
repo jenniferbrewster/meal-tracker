@@ -219,17 +219,19 @@ FOOD_NUTRIENTS = {
             'carbs': 0.72,
             'fiber': 0
         },
-        "Turkey": {
-          "calories": 135,
-          "protein": 30,
-          "carbs": 0,
-          "fat": 1.5
+        'Turkey': {
+          'calories': 135,
+          'protein': 30,
+          'carbs': 0,
+          'fat': 1.5,
+          'fiber': 0
         },
         'Chicken Pieces with Skin': {  # Raw chicken pieces with skin
-            'calories': 239,
+            'calories': 150,
             'protein': 27,
             'carbs': 0,
-            'fat': 14
+            'fat': 14,
+            'fiber': 0
         },
         'Lean fresh chicken': {  # Chicken breast, raw, USDA #05062
             'calories': 120,
